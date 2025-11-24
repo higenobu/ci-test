@@ -1,0 +1,60 @@
+name: CI / Build / Test / Coverage Gate
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+  workflow_dispatch:
+
+env:
+  ARTIFACT_NAME: "app-artifact"
+  COVERAGE_THRESHOLD: "80"
+
+jobs:
+  test:
+    name: Run tests & produce coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run pytest (with coverage)
+        run: |
+          pytest --junitxml=report.xml
+      - name: Upload coverage xml
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+      - name: Upload test junit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-report
+          path: report.xml
+
+  coverage_gate:
+    name: Coverage gate
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: ./coverage_artifacts
+      - name: Install Python tools for check
+        run: |
+          python -m pip install --upgrade pip
+          pip install coverage
+      - name: Run coverage gate script
+        run: |
+          python scripts/check_coverage.py coverage_artifacts/coverage.xml ${{ env.COVERAGE_THRESHOLD }}
