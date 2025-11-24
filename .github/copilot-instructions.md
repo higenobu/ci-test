@@ -6,8 +6,8 @@ This is a sample FastAPI application designed for CI/CD testing and demonstratio
 ## Technology Stack
 - **Language**: Python 3.11+
 - **Framework**: FastAPI 0.95.2
-- **Server**: Uvicorn with standard features
-- **Testing**: pytest 7.4.2 with httpx for API testing
+- **Server**: Uvicorn 0.22.0 with standard extras (httptools, uvloop, watchfiles, websockets)
+- **Testing**: pytest 7.4.2 with httpx 0.25.0 for API testing
 - **Containerization**: Docker
 - **Code Coverage**: coverage 7.2.6
 
