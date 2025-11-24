@@ -33,16 +33,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-     - name: Show repo files (debug)
-  run: |
-    echo "Working directory: $(pwd)"
-    ls -al
-    echo "Repo tree:"
-    find . -maxdepth 3 -type f -print || true
-
-- name: Run pytest
-  run: |
-    pytest -q tests
+    
+      - name: Run pytest
+        run: |
+          pytest -q tests
     
 
   build-and-smoke:
