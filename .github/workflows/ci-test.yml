@@ -35,7 +35,7 @@ jobs:
 
       - name: Run pytest
         run: |
-          pytest
+          python -m pytest -q
 
   build-and-smoke:
     name: Build Docker image and smoke test
